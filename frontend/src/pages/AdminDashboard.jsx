@@ -1,72 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import { getAnalytics } from '../services/api';
-import { Users, FileText, Activity } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Users, Activity, Target } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ total_count: 0 });
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    getAnalytics().then(data => setStats(data)).catch(err => console.error(err));
+    getAnalytics().then(setData).catch(console.error);
   }, []);
 
-  const mockData = [
-    { name: 'Mon', resumes: 12 },
-    { name: 'Tue', resumes: 19 },
-    { name: 'Wed', resumes: 15 },
-    { name: 'Thu', resumes: 22 },
-    { name: 'Fri', resumes: 30 },
-    { name: 'Sat', resumes: 10 },
-    { name: 'Sun', resumes: 8 },
-  ];
+  if (!data) return <div className="p-8 flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-slate-800">Admin Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
-            <FileText className="w-8 h-8" />
-          </div>
-          <div>
-            <div className="text-sm font-medium text-slate-500">Total Resumes Analyzed</div>
-            <div className="text-3xl font-bold text-slate-800">{stats.total_count}</div>
-          </div>
+    <div className="p-6 max-w-7xl mx-auto h-full min-h-[calc(100vh-73px)]">
+      <div className="mb-8 flex items-center gap-3">
+        <div className="p-3 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl">
+          <Activity className="w-6 h-6" />
         </div>
-        
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-emerald-50 text-emerald-600 rounded-xl">
-            <Users className="w-8 h-8" />
-          </div>
-          <div>
-            <div className="text-sm font-medium text-slate-500">Active Users</div>
-            <div className="text-3xl font-bold text-slate-800">124</div>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Admin Dashboard</h1>
+          <p className="text-slate-500 dark:text-slate-400">Platform Analytics & Insights</p>
         </div>
+      </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="p-4 bg-purple-50 text-purple-600 rounded-xl">
-            <Activity className="w-8 h-8" />
-          </div>
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 transition-colors">
+          <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl"><Users className="w-8 h-8" /></div>
           <div>
-            <div className="text-sm font-medium text-slate-500">System Uptime</div>
-            <div className="text-3xl font-bold text-slate-800">99.9%</div>
+            <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Resumes Analyzed</div>
+            <div className="text-3xl font-bold text-slate-800 dark:text-white">{data.total_count}</div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 transition-colors">
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl"><Target className="w-8 h-8" /></div>
+          <div>
+            <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Average ATS Score</div>
+            <div className="text-3xl font-bold text-slate-800 dark:text-white">{data.average_score}%</div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-96">
-        <h2 className="text-xl font-semibold mb-6">Weekly Activity</h2>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={mockData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-            <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-            <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '0.75rem', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
-            <Bar dataKey="resumes" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
+        <h2 className="text-xl font-semibold mb-6 text-slate-800 dark:text-white">Recent Analyses</h2>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.recent}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <XAxis dataKey="filename" tick={{ fill: '#64748b' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#64748b' }} axisLine={false} tickLine={false} />
+              <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <Bar dataKey="ats_score" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
