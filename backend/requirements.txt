@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+psycopg2-binary
+python-multipart
+pdfplumber
+python-docx
+scikit-learn
+openai
+python-dotenv
