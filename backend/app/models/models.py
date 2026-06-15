@@ -14,4 +14,7 @@ class ResumeAnalysis(Base):
     missing_skills = Column(Text) # JSON string
     strengths = Column(Text) # JSON string
     weaknesses = Column(Text) # JSON string
+    cover_letter = Column(Text)
+    interview_questions = Column(Text) # JSON string
+    suggestions = Column(Text) # JSON string
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

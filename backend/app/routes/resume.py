@@ -35,7 +35,10 @@ async def analyze_resume(resume_text: str = Form(...), job_description: str = Fo
                 education_match=analysis_result["education_match"],
                 missing_skills=json.dumps(analysis_result["missing_skills"]),
                 strengths=json.dumps(analysis_result["strengths"]),
-                weaknesses=json.dumps(analysis_result["weaknesses"])
+                weaknesses=json.dumps(analysis_result["weaknesses"]),
+                cover_letter=analysis_result["cover_letter"],
+                interview_questions=json.dumps(analysis_result["interview_questions"]),
+                suggestions=json.dumps(analysis_result["suggestions"])
             )
             db.add(db_analysis)
             db.commit()
