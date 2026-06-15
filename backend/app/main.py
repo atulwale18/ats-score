@@ -1,6 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import resume
+from app.database import engine, Base
+
+# Create DB tables if engine is available
+if engine:
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print("Could not create tables:", e)
 
 app = FastAPI(title="ATS Resume Scorer API")
 
